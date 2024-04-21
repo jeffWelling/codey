@@ -6,6 +6,10 @@ memory constraints of your system.
 
 ## Getting Started
 
+Choose a model. You'll need to choose one that fits within your available
+memory, this defaults to llama3:latest which is one of the smallest models I can
+find. Set your model in `my_model` on line 19.
+
 Setup a virtual env
 
 ```bash
