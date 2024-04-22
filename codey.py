@@ -33,7 +33,7 @@ st.subheader(help_prompt)
 Settings.embed_model = resolve_embed_model("local:BAAI/bge-small-en-v1.5")
 
 # ollama
-Settings.llm = Ollama(model=my_model)
+Settings.llm = Ollama(model=my_model, request_timeout=900)
 
 #query_engine = index.as_query_engine()
 #response = query_engine.query("Please explain giticket")
