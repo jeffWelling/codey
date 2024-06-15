@@ -7,13 +7,47 @@
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
 from llama_index.core.embeddings import resolve_embed_model
 from llama_index.llms.ollama import Ollama
+from llama_index.readers.github import GithubRepositoryReader, GithubClient
 import streamlit as st
 import asyncio
+import sys
+import os
+
+sys.setrecursionlimit(1500)
 
 @st.cache_resource(show_spinner=False)
 def load_data() -> VectorStoreIndex:
+    github_client = GithubClient(github_token=os.environ["GITHUB_TOKEN"], verbose=False)
+
+    github_reader = GithubRepositoryReader(
+        github_client=github_client,
+        owner=os.environ["CODEY_GITHUB_OWNER"], # eg. "jeffwelling"
+        repo=os.environ["CODEY_GITHUB_REPO"], # eg. "giticket"
+        use_parser=False,
+        verbose=False,
+        filter_file_extensions=(
+            [
+                ".png",
+                ".jpg",
+                ".jpeg",
+                ".gif",
+                ".svg",
+                ".ico",
+                "json",
+                ".ipynb",
+            ],
+            GithubRepositoryReader.FilterType.EXCLUDE,
+        ),
+    )
     with st.spinner(text="Loading and indexing the document data..."):
-        documents = SimpleDirectoryReader("codey_data").load_data()
+        # Switch on os.environ["CODEY_SOURCE"]
+        match os.environ["CODEY_SOURCE"]:
+            case "github":
+                documents = github_reader.load_data(branch="main")
+            case "dir":
+                documents = SimpleDirectoryReader("codey_data").load_data()
+            case _:
+                raise ValueError(f"Invalid CODEY_SOURCE: {os.environ['CODEY_SOURCE']}")
         return VectorStoreIndex.from_documents(documents)
 
 my_model = "llama3:latest"

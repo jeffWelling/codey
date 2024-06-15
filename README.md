@@ -21,6 +21,24 @@ Install the required packages
 
 ```bash
 pip install -r requirements.txt
+pip install llama-index-readers-github
+```
+
+Configure the server
+
+Read from GitHub repo jeffwelling/giticket
+
+```bash
+export CODEY_SOURCE="github"
+export CODEY_GITHUB_OWNER="jeffwelling"
+export CODEY_GITHUB_REPO="giticket"
+export GITHUB_TOKEN="SomeSuperSecretTokenGoesHere"
+```
+
+Read from local directory called codey_data
+
+```bash
+export CODEY_SOURCE="dir"
 ```
 
 Start the server
